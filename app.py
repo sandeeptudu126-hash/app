@@ -69,7 +69,7 @@ class LoginForm(FlaskForm):
 
 @app.route('/')
 def home():
-    return render_template("welcome.html")
+    return render_template("index.html")
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -126,6 +126,7 @@ def logout():
     logout_user()
     flash("Logged out successfully")
     return redirect(url_for('home'))
+    return render_template("signup.html", form=form)
 
 # -----------------------
 # Run Application
@@ -134,3 +135,4 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(debug=False)
+
