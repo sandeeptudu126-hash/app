@@ -81,7 +81,7 @@ def signup():
         existing_user = User.query.filter_by(username=form.username.data).first()
         if existing_user:
             flash("Username already exists!")
-            return redirect(url_for('signup'))
+            return redirect(url_for(http://127.0.0.1:5000/signup.html))
 
         # Hash password
         hashed_password = generate_password_hash(form.password.data)
@@ -135,4 +135,5 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(debug=False)
+
 
