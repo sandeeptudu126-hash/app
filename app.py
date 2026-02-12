@@ -6,30 +6,21 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, Email
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# -----------------------
-# App Configuration
-# -----------------------
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey123'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Extra Security
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 db = SQLAlchemy(app)
 
-# -----------------------
-# Login Manager
-# -----------------------
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
-# -----------------------
-# Database Model
-# -----------------------
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
@@ -39,10 +30,7 @@ class User(db.Model, UserMixin):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
-# -----------------------
-# Forms (Validation + CSRF)
-# -----------------------
+    
 class RegisterForm(FlaskForm):
     username = StringField(validators=[
         InputRequired(),
@@ -63,9 +51,6 @@ class LoginForm(FlaskForm):
     password = PasswordField(validators=[InputRequired()])
     submit = SubmitField("Login")
 
-# -----------------------
-# Routes
-# -----------------------
 
 @app.route('/')
 def home():
@@ -77,13 +62,11 @@ def signup():
 
     if form.validate_on_submit():
 
-        # Check if user already exists
         existing_user = User.query.filter_by(username=form.username.data).first()
         if existing_user:
             flash("Username already exists!")
             return render_template("signup.html", form=form)
 
-        # Hash password
         hashed_password = generate_password_hash(form.password.data)
 
         new_user = User(
@@ -127,11 +110,9 @@ def logout():
     flash("Logged out successfully")
     return render_template("index.html")
 
-# -----------------------
-# Run Application
-# -----------------------
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(debug=False)
+
 
