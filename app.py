@@ -81,7 +81,7 @@ def signup():
         existing_user = User.query.filter_by(username=form.username.data).first()
         if existing_user:
             flash("Username already exists!")
-            return redirect(url_for(http://127.0.0.1:5000/signup.html))
+            return redirect(url_for("signup.html"))
 
         # Hash password
         hashed_password = generate_password_hash(form.password.data)
@@ -96,7 +96,7 @@ def signup():
         db.session.commit()
 
         flash("Account created successfully! Please login.")
-        return redirect(url_for('login'))
+        return redirect(url_for("login.html"))
 
     return render_template("signup.html", form=form)
 
@@ -109,7 +109,7 @@ def login():
 
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
-            return redirect(url_for('dashboard'))
+            return redirect(url_for("dashboard.html"))
         else:
             flash("Invalid username or password")
 
@@ -126,7 +126,7 @@ def logout():
     logout_user()
     flash("Logged out successfully")
     return redirect(url_for('home'))
-    return render_template("signup.html", form=form)
+    return render_template("index.html", form=form)
 
 # -----------------------
 # Run Application
@@ -135,5 +135,6 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(debug=False)
+
 
 
